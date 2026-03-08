@@ -1,0 +1,50 @@
+flowchart LR
+    Buyer([Buyer])
+    Farmer([Farmer])
+    Admin([Admin])
+    System([System Services])
+
+    UC1((Register / Login))
+    UC2((Manage Farmer Profile))
+    UC3((Upload Farmer Documents))
+    UC4((Approve/Reject Farmers))
+    UC5((Create/Update/Delete Product))
+    UC6((Approve/Reject Products))
+    UC7((Browse/Search Products))
+    UC8((Save Products))
+    UC9((Manage Cart))
+    UC10((Place Order))
+    UC11((Process Payment))
+    UC12((Update Order Status))
+    UC13((View Dashboards/Reports))
+    UC14((Submit Complaint))
+    UC15((Resolve Complaint))
+    UC16((Price Prediction))
+    UC17((Send Order Notifications))
+
+    Buyer --> UC1
+    Buyer --> UC7
+    Buyer --> UC8
+    Buyer --> UC9
+    Buyer --> UC10
+    Buyer --> UC13
+    Buyer --> UC14
+
+    Farmer --> UC1
+    Farmer --> UC2
+    Farmer --> UC3
+    Farmer --> UC5
+    Farmer --> UC12
+    Farmer --> UC13
+    Farmer --> UC15
+
+    Admin --> UC4
+    Admin --> UC6
+    Admin --> UC13
+
+    System --> UC11
+    System --> UC16
+    System --> UC17
+
+    UC10 --> UC11
+    UC10 --> UC17

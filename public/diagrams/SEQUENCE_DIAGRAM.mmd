@@ -1,0 +1,57 @@
+sequenceDiagram
+    autonumber
+    actor Buyer
+    participant FE as Frontend (React)
+    participant API as Backend API (FastAPI)
+    participant Auth as Auth Service
+    participant Product as Product Service
+    participant Cart as Cart/Order Service
+    participant DB as MySQL DB
+    participant Notify as Notification Service
+
+    Buyer->>FE: Login(email, password)
+    FE->>API: POST /auth/login
+    API->>Auth: login_user(...)
+    Auth->>DB: SELECT user by email
+    DB-->>Auth: user row
+    Auth-->>API: auth success + user
+    API-->>FE: 200 OK
+
+    Buyer->>FE: Browse marketplace
+    FE->>API: GET /products/marketplace
+    API->>Product: get_all_products_for_marketplace()
+    Product->>DB: SELECT active approved products
+    DB-->>Product: product list
+    Product-->>API: products
+    API-->>FE: 200 OK + products
+
+    Buyer->>FE: Add item to cart
+    FE->>API: POST /cart/add
+    API->>Cart: add_to_cart(buyer_id, product_id, qty)
+    Cart->>DB: SELECT product availability
+    DB-->>Cart: available_quantity
+    Cart->>DB: INSERT/UPDATE cart_items
+    DB-->>Cart: success
+    Cart-->>API: Added to cart
+    API-->>FE: 200 OK
+
+    Buyer->>FE: Checkout(COD/ONLINE)
+    FE->>API: POST /cart/checkout
+    API->>Cart: checkout(buyer_id, payment_method)
+    Cart->>DB: SELECT cart + product details
+    DB-->>Cart: cart rows
+
+    alt Payment method = ONLINE
+        Cart->>DB: INSERT orders(payment_status=PAID, transaction_id)
+    else Payment method = COD
+        Cart->>DB: INSERT orders(payment_status=PENDING)
+    end
+
+    Cart->>DB: UPDATE products.available_quantity
+    Cart->>DB: DELETE buyer cart_items
+    DB-->>Cart: committed
+    Cart->>Notify: send_order_confirmation_email(...)
+    Notify-->>Cart: sent
+    Cart-->>API: order_ids + summary
+    API-->>FE: 200 OK + confirmation
+    FE-->>Buyer: Show order confirmation

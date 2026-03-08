@@ -1,0 +1,182 @@
+classDiagram
+    class User {
+      +int id
+      +string name
+      +string email
+      +string phone
+      +string password_hash
+      +string user_type
+      +string account_status
+      +string approval_status
+      +string farm_location
+      +datetime created_at
+    }
+
+    class Product {
+      +int id
+      +int farmer_id
+      +string name
+      +string category
+      +decimal price
+      +string quantity
+      +string unit
+      +decimal available_quantity
+      +string quality
+      +string status
+      +string approval_status
+      +string image_url
+      +string description
+      +datetime created_at
+    }
+
+    class Order {
+      +int id
+      +int buyer_id
+      +int product_id
+      +int farmer_id
+      +decimal quantity
+      +decimal amount
+      +string payment_method
+      +string payment_status
+      +string transaction_id
+      +string status
+      +datetime created_at
+    }
+
+    class CartItem {
+      +int id
+      +int buyer_id
+      +int product_id
+      +decimal quantity
+      +datetime created_at
+    }
+
+    class SavedProduct {
+      +int id
+      +int buyer_id
+      +int product_id
+      +datetime created_at
+    }
+
+    class Complaint {
+      +int id
+      +int order_id
+      +int farmer_id
+      +int buyer_id
+      +string subject
+      +string message
+      +string status
+      +string resolution_note
+      +datetime created_at
+      +datetime resolved_at
+    }
+
+    class FarmerDocument {
+      +int id
+      +int farmer_id
+      +string document_name
+      +string document_url
+      +string verification_status
+      +datetime created_at
+    }
+
+    class AuthService {
+      +register_user(name, email, phone, password, user_type)
+      +login_user(email, password, user_type)
+      +hash_password(password)
+      +verify_password(password, hashed)
+    }
+
+    class ProductService {
+      +create_product(...)
+      +get_all_products_for_marketplace()
+      +get_products_by_farmer(farmer_id)
+      +get_product(product_id)
+      +update_product(...)
+      +delete_product(product_id, farmer_id)
+    }
+
+    class CartService {
+      +get_cart_count(buyer_id)
+      +get_cart(buyer_id)
+      +add_to_cart(buyer_id, product_id, quantity)
+      +update_cart_item(buyer_id, product_id, quantity)
+      +remove_from_cart(buyer_id, product_id)
+      +checkout(buyer_id, payment_method)
+      +buy_now(buyer_id, product_id, quantity, payment_method)
+    }
+
+    class BuyerService {
+      +get_buyer_dashboard(buyer_id)
+      +get_buyer_profile(buyer_id)
+      +update_buyer_profile(...)
+      +list_buyer_orders(buyer_id, status)
+      +list_buyer_payments(buyer_id, payment_status)
+      +list_buyer_complaints(buyer_id)
+      +add_buyer_complaint(...)
+    }
+
+    class FarmerService {
+      +get_farmer_profile(farmer_id)
+      +update_farmer_profile(...)
+      +get_farmer_overview(farmer_id)
+      +list_farmer_orders(farmer_id, status)
+      +update_farmer_order_status(...)
+      +get_farmer_reports(farmer_id, days)
+      +list_farmer_complaints(farmer_id, status)
+      +resolve_farmer_complaint(...)
+      +list_farmer_documents(farmer_id)
+      +add_farmer_document(...)
+    }
+
+    class AdminService {
+      +get_admin_overview()
+      +list_users(user_type, account_status, q)
+      +set_user_status(user_id, status)
+      +list_farmers(approval_status)
+      +set_farmer_approval(user_id, approval_status)
+      +list_products(approval_status, status)
+      +set_product_approval(product_id, approval_status)
+      +list_orders(status, limit)
+      +list_payments(payment_status, method, limit)
+      +get_reports_summary()
+    }
+
+    class PricePredictionService {
+      +predict_price(crop, region, date, weather)
+    }
+
+    class NotificationService {
+      +send_order_confirmation_email(...)
+      +send_sms(...)
+    }
+
+    User "1" --> "0..*" Product : sells
+    User "1" --> "0..*" Order : places(buyer)
+    User "1" --> "0..*" Order : fulfills(farmer)
+    Product "1" --> "0..*" Order : ordered_in
+
+    User "1" --> "0..*" CartItem : has
+    Product "1" --> "0..*" CartItem : cart_ref
+
+    User "1" --> "0..*" SavedProduct : saves
+    Product "1" --> "0..*" SavedProduct : saved_ref
+
+    Order "1" --> "0..*" Complaint : has
+    User "1" --> "0..*" Complaint : raised_by_or_for
+
+    User "1" --> "0..*" FarmerDocument : uploads
+
+    AuthService ..> User : manages
+    ProductService ..> Product : manages
+    CartService ..> CartItem : manages
+    CartService ..> Order : creates
+    BuyerService ..> SavedProduct : manages
+    BuyerService ..> Complaint : creates
+    FarmerService ..> FarmerDocument : manages
+    FarmerService ..> Complaint : resolves
+    AdminService ..> User : moderates
+    AdminService ..> Product : moderates
+    AdminService ..> Order : monitors
+    CartService ..> NotificationService : triggers
+    PricePredictionService ..> Product : supports_pricing

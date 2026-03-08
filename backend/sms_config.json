@@ -1,0 +1,12 @@
+{
+  "SMS_PROVIDER": "notifylk",
+  "NOTIFYLK_USER_ID": "31035",
+  "NOTIFYLK_API_KEY": "vcGn9GSwwJnncJlAQvrh",
+  "NOTIFYLK_SENDER_ID": "NotifyDEMO",
+  "SMTP_HOST": "smtp.gmail.com",
+  "SMTP_PORT": "587",
+  "SMTP_USERNAME": "your-email@gmail.com",
+  "SMTP_PASSWORD": "your-app-password",
+  "EMAIL_FROM": "your-email@gmail.com",
+  "SMTP_USE_TLS": "1"
+}

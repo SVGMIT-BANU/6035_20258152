@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 42 35% 97%;
+    --foreground: 142 28% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 140 30% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 140 30% 15%;
+
+    --primary: 147 56% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 34 70% 47%;
+    --secondary-foreground: 44 100% 98%;
+
+    --muted: 40 24% 92%;
+    --muted-foreground: 145 14% 38%;
+
+    --accent: 44 92% 56%;
+    --accent-foreground: 142 28% 16%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 145 17% 84%;
+    --input: 145 17% 84%;
+    --ring: 147 56% 30%;
+
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(148 52% 26%), hsl(148 47% 34%) 48%, hsl(34 73% 46%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(44 35% 99%), hsl(40 28% 95%));
+    
+    /* Shadows */
+    --shadow-soft: 0 18px 50px -22px hsl(147 48% 24% / 0.24);
+    --shadow-card: 0 14px 34px -24px hsl(147 35% 24% / 0.2);
+    
+    --sidebar-background: 48 20% 97%;
+    --sidebar-foreground: 140 30% 20%;
+    --sidebar-primary: 140 60% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 48 30% 90%;
+    --sidebar-accent-foreground: 140 30% 20%;
+    --sidebar-border: 140 20% 88%;
+    --sidebar-ring: 140 60% 35%;
+  }
+
+  .dark {
+    --background: 140 25% 8%;
+    --foreground: 48 20% 95%;
+
+    --card: 140 20% 12%;
+    --card-foreground: 48 20% 95%;
+
+    --popover: 140 20% 12%;
+    --popover-foreground: 48 20% 95%;
+
+    --primary: 140 55% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 30 40% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 140 20% 18%;
+    --muted-foreground: 140 15% 60%;
+
+    --accent: 45 85% 50%;
+    --accent-foreground: 140 25% 8%;
+
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 140 20% 22%;
+    --input: 140 20% 22%;
+    --ring: 140 55% 45%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(140 55% 35%), hsl(120 60% 40%));
+    --gradient-card: linear-gradient(180deg, hsl(140 20% 12%), hsl(140 20% 10%));
+    
+    --shadow-soft: 0 4px 20px -4px hsl(140 60% 20% / 0.3);
+    --shadow-card: 0 2px 12px -2px hsl(140 50% 15% / 0.25);
+    
+    --sidebar-background: 140 20% 10%;
+    --sidebar-foreground: 48 20% 90%;
+    --sidebar-primary: 140 55% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 20% 18%;
+    --sidebar-accent-foreground: 48 20% 90%;
+    --sidebar-border: 140 20% 22%;
+    --sidebar-ring: 140 55% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Poppins", "Noto Sans Tamil", sans-serif;
+    background-image:
+      radial-gradient(circle at 8% 12%, hsl(42 96% 72% / 0.2), transparent 28%),
+      radial-gradient(circle at 92% 8%, hsl(146 60% 54% / 0.16), transparent 22%),
+      radial-gradient(circle at 50% 100%, hsl(28 75% 70% / 0.12), transparent 30%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(40 30% 94%));
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-card {
+    background: hsl(0 0% 100% / 0.76);
+    backdrop-filter: blur(16px);
+    border: 1px solid hsl(var(--border) / 0.85);
+  }
+
+  .sri-gradient {
+    background: linear-gradient(
+      110deg,
+      hsl(147 56% 28%) 0%,
+      hsl(37 76% 48%) 52%,
+      hsl(16 74% 44%) 100%
+    );
+  }
+
+  .soil-panel {
+    background:
+      linear-gradient(180deg, hsl(44 52% 98%), hsl(40 28% 95%)),
+      hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-card);
+  }
+
+  .dashboard-shell {
+    background:
+      linear-gradient(180deg, hsl(44 40% 98% / 0.96), hsl(42 24% 95% / 0.92));
+    border: 1px solid hsl(var(--border) / 0.85);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .dashboard-sidebar {
+    background:
+      linear-gradient(180deg, hsl(0 0% 100% / 0.9), hsl(44 28% 96% / 0.95));
+    border: 1px solid hsl(var(--border));
+    box-shadow: var(--shadow-card);
+  }
+
+  .section-kicker {
+    @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em];
+    border-color: hsl(var(--primary) / 0.18);
+    background: hsl(var(--primary) / 0.08);
+    color: hsl(var(--primary));
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.7s ease both;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

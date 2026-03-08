@@ -1,0 +1,15 @@
+flowchart LR
+    U[User Browser\nBuyer/Farmer/Admin] --> FE[React Frontend\nVite + TypeScript]
+    FE -->|REST API| BE[FastAPI Backend\nPython Services]
+    BE --> AUTH[Auth Module\nbcrypt + role checks]
+    BE --> PROD[Product Service]
+    BE --> ORDER[Order/Cart Service]
+    BE --> DASH[Buyer/Farmer/Admin Dashboards]
+    BE --> NOTIF[Notification Service\nEmail/SMS]
+    BE --> ML[Price Prediction Service\nPickle Models]
+    AUTH --> DB[(MySQL\nfresh_ai_trade)]
+    PROD --> DB
+    ORDER --> DB
+    DASH --> DB
+    NOTIF --> SMTP[SMTP/SMS Provider]
+    ML --> MODELS[(ML Model Files\n*.pkl)]

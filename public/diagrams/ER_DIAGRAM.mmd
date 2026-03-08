@@ -1,0 +1,94 @@
+erDiagram
+    USERS {
+        INT id PK
+        VARCHAR name
+        VARCHAR email UK
+        VARCHAR phone UK
+        VARCHAR password_hash
+        ENUM user_type
+        VARCHAR account_status
+        VARCHAR approval_status
+        VARCHAR farm_location
+        TIMESTAMP created_at
+    }
+
+    PRODUCTS {
+        INT id PK
+        INT farmer_id FK
+        VARCHAR name
+        ENUM category
+        DECIMAL price
+        VARCHAR quantity
+        VARCHAR unit
+        DECIMAL available_quantity
+        ENUM quality
+        VARCHAR status
+        VARCHAR approval_status
+        VARCHAR image_url
+        TEXT description
+        TIMESTAMP created_at
+    }
+
+    ORDERS {
+        INT id PK
+        INT buyer_id FK
+        INT product_id FK
+        INT farmer_id FK
+        DECIMAL quantity
+        DECIMAL amount
+        VARCHAR payment_method
+        VARCHAR payment_status
+        VARCHAR transaction_id
+        VARCHAR status
+        TIMESTAMP created_at
+    }
+
+    CART_ITEMS {
+        INT id PK
+        INT buyer_id FK
+        INT product_id FK
+        DECIMAL quantity
+        TIMESTAMP created_at
+    }
+
+    SAVED_PRODUCTS {
+        INT id PK
+        INT buyer_id FK
+        INT product_id FK
+        TIMESTAMP created_at
+    }
+
+    COMPLAINTS {
+        INT id PK
+        INT order_id
+        INT farmer_id FK
+        INT buyer_id
+        VARCHAR subject
+        TEXT message
+        VARCHAR status
+        TEXT resolution_note
+        TIMESTAMP created_at
+        TIMESTAMP resolved_at
+    }
+
+    FARMER_DOCUMENTS {
+        INT id PK
+        INT farmer_id FK
+        VARCHAR document_name
+        VARCHAR document_url
+        VARCHAR verification_status
+        TIMESTAMP created_at
+    }
+
+    USERS ||--o{ PRODUCTS : "lists"
+    USERS ||--o{ ORDERS : "places as buyer"
+    USERS ||--o{ ORDERS : "receives as farmer"
+    PRODUCTS ||--o{ ORDERS : "appears in"
+    USERS ||--o{ CART_ITEMS : "owns"
+    PRODUCTS ||--o{ CART_ITEMS : "added to"
+    USERS ||--o{ SAVED_PRODUCTS : "saves"
+    PRODUCTS ||--o{ SAVED_PRODUCTS : "bookmarked in"
+    USERS ||--o{ COMPLAINTS : "handled by farmer"
+    USERS o|--o{ COMPLAINTS : "submitted by buyer"
+    ORDERS o|--o{ COMPLAINTS : "referenced by"
+    USERS ||--o{ FARMER_DOCUMENTS : "uploads"
