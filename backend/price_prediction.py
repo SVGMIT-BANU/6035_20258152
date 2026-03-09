@@ -44,6 +44,7 @@ def _find_existing(paths: list[Path]) -> Path:
 def _resolve_paths() -> dict[str, Path]:
     root = _project_root()
     backend_dir = Path(__file__).resolve().parent
+    model_dir = root / "model"
 
     dataset_env = os.getenv("PRICE_DATASET_PATH")
     dataset_candidates = []
@@ -59,11 +60,21 @@ def _resolve_paths() -> dict[str, Path]:
 
     return {
         "dataset": _find_existing(dataset_candidates),
-        "veg_model": _find_existing([root / "vegetable_model.pkl", backend_dir / "vegetable_model.pkl"]),
-        "fruit_model": _find_existing([root / "fruit_model.pkl", backend_dir / "fruit_model.pkl"]),
-        "region_encoder": _find_existing([root / "region_encoder.pkl", backend_dir / "region_encoder.pkl"]),
-        "veg_encoder": _find_existing([root / "veg_encoder.pkl", backend_dir / "veg_encoder.pkl"]),
-        "fruit_encoder": _find_existing([root / "fruit_encoder.pkl", backend_dir / "fruit_encoder.pkl"]),
+        "veg_model": _find_existing(
+            [root / "vegetable_model.pkl", model_dir / "vegetable_model.pkl", backend_dir / "vegetable_model.pkl"]
+        ),
+        "fruit_model": _find_existing(
+            [root / "fruit_model.pkl", model_dir / "fruit_model.pkl", backend_dir / "fruit_model.pkl"]
+        ),
+        "region_encoder": _find_existing(
+            [root / "region_encoder.pkl", model_dir / "region_encoder.pkl", backend_dir / "region_encoder.pkl"]
+        ),
+        "veg_encoder": _find_existing(
+            [root / "veg_encoder.pkl", model_dir / "veg_encoder.pkl", backend_dir / "veg_encoder.pkl"]
+        ),
+        "fruit_encoder": _find_existing(
+            [root / "fruit_encoder.pkl", model_dir / "fruit_encoder.pkl", backend_dir / "fruit_encoder.pkl"]
+        ),
     }
 
 
@@ -87,15 +98,25 @@ def _load_cache() -> dict[str, Any]:
     for col in [temp_col, "Rainfall (mm)", "Humidity (%)", "Crop Yield Impact Score"]:
         df[col] = pd.to_numeric(df[col], errors="coerce")
 
+    veg_model = joblib.load(paths["veg_model"])
+    fruit_model = joblib.load(paths["fruit_model"])
+
+    # Force single-thread prediction to avoid Windows permission issues with
+    # joblib-backed worker pools in constrained environments.
+    if hasattr(veg_model, "n_jobs"):
+        veg_model.n_jobs = 1
+    if hasattr(fruit_model, "n_jobs"):
+        fruit_model.n_jobs = 1
+
     veg_bundle = Bundle(
-        model=joblib.load(paths["veg_model"]),
+        model=veg_model,
         region_encoder=joblib.load(paths["region_encoder"]),
         commodity_encoder=joblib.load(paths["veg_encoder"]),
         commodity_col="vegitable_Commodity",
         target_col="vegitable_Price per Unit (LKR/kg)",
     )
     fruit_bundle = Bundle(
-        model=joblib.load(paths["fruit_model"]),
+        model=fruit_model,
         region_encoder=joblib.load(paths["region_encoder"]),
         commodity_encoder=joblib.load(paths["fruit_encoder"]),
         commodity_col="fruit_Commodity",
